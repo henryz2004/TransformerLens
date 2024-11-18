@@ -2080,7 +2080,7 @@ class HookedTransformer(HookedRootModule):
             return_type (Optional[str]): The type of the output to return - either a string (str),
                 a tensor of tokens (tensor) or whatever the format of the input was (input).
             verbose (bool): If True, show tqdm progress bars for generation.
-            streaming (bool): If True, stream the output tokens across the entire batch.
+            streaming (bool): If True, stream the output token-by-token.
 
         Returns:
             outputs (torch.Tensor): [batch, pos + max_new_tokens], generated sequence of new tokens
