@@ -2034,6 +2034,7 @@ class HookedTransformer(HookedRootModule):
         padding_side: Optional[Literal["left", "right"]] = USE_DEFAULT_VALUE,
         return_type: Optional[str] = "input",
         verbose: bool = True,
+        streaming: bool = False
     ) -> Union[Int[torch.Tensor, "batch pos_plus_new_tokens"], str]:
         """Sample Tokens from the Model.
 
@@ -2079,6 +2080,7 @@ class HookedTransformer(HookedRootModule):
             return_type (Optional[str]): The type of the output to return - either a string (str),
                 a tensor of tokens (tensor) or whatever the format of the input was (input).
             verbose (bool): If True, show tqdm progress bars for generation.
+            streaming (bool): If True, stream the output tokens across the entire batch.
 
         Returns:
             outputs (torch.Tensor): [batch, pos + max_new_tokens], generated sequence of new tokens
@@ -2204,6 +2206,9 @@ class HookedTransformer(HookedRootModule):
                     )
 
                 tokens = torch.cat([tokens, sampled_tokens.unsqueeze(-1)], dim=-1)
+
+                if streaming:
+                    yield sampled_tokens.unsqueeze(-1)
 
                 if stop_at_eos and finished_sequences.all():
                     break
